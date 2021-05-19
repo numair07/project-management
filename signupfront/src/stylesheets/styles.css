@@ -1,0 +1,33 @@
+html {
+    width:100%;
+    height:100%;
+}
+
+.main-container {
+    height: 100%;
+    background-color: #e4fbff;
+    padding: 5%;
+}
+
+.top-container {
+    padding: 10px;
+    width: 90%;
+    margin: auto;
+}
+
+.signup-container {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: auto;
+    width: 450px;
+    height: 100%;
+    border-radius: 7px;
+}
+
+.sign-up-button {
+    width: 100%;
+}
+
+.navbar-nav {
+    margin-left: auto;
+}
