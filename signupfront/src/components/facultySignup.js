@@ -2,40 +2,31 @@ import React from "react";
 import axios from "axios";
 import "../stylesheets/styles.css";
 
-class signupPage extends React.Component {
-
+class facultySignup extends React.Component {
     constructor() {
         super();
         this.changeFullName = this.changeFullName.bind(this);
-        this.changeuserName = this.changeuserName.bind(this);
         this.changeEmail = this.changeEmail.bind(this);
         this.changePassword = this.changePassword.bind(this);
-        this.changeEID = this.changeEID.bind(this);
-        this.changeRollNumber = this.changeRollNumber.bind(this);
-        this.setDate = this.setDate.bind(this);
+        this.changeFID = this.changeFID.bind(this);
+        this.changeDomain = this.changeDomain.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.validateEmail = this.validateEmail.bind(this);
         this.validatePassword = this.validatePassword.bind(this);
-        this.validateEnrollmentId = this.validateEnrollmentId.bind(this);
+        this.validateFacultyId = this.validateFacultyId.bind(this);
         this.validateFullName = this.validateFullName.bind(this);
-        this.validateRollNo = this.validateRollNo.bind(this);
-        this.validateUsername = this.validateUsername.bind(this);
     }
 
     state = {
         isEmail: 1,
-        isFullName: 1,
-        isRollNo: 1,
         isPassword: 1,
-        isEid: 1,
-        isUsername: 1,
+        isFacultyId: 1,
+        isFullName: 1,
         fullname : "",
-        username : "",
         email : "",
         password : "",
-        date : Date,
-        enrollmentid: "",
-        rollno: ""
+        domainname: "",
+        facultyid: ""
     }
 
     changeFullName(event) {
@@ -44,27 +35,21 @@ class signupPage extends React.Component {
         });
     }
     
-    changeuserName(event) {
-        this.setState ({
-            username: event.target.value
-        });
-    }
-
     changeEmail(event) {
         this.setState ({
             email: event.target.value
         });
     }
 
-    changeEID(event) {
+    changeFID(event) {
         this.setState ({
-            enrollmentid: event.target.value
+            facultyid: event.target.value
         });
     }
 
-    changeRollNumber(event) {
+    changeDomain(event) {
         this.setState ({
-            rollno: event.target.value
+            domainname: event.target.value
         });
     }
 
@@ -74,55 +59,38 @@ class signupPage extends React.Component {
         });
     }
 
-    setDate() {
-        let newDate = new Date();
-
-        this.setState({
-            date: newDate
-        });
-    }
 
     async onSubmit(event) {
         event.preventDefault();
-        if(this.state.isFullName === 1 && this.state.isUsername === 1 && this.state.isRollNo === 1 && this.state.isPassword === 1 && this.state.isEid && this.state.isEmail) {
+        if(this.state.isEmail === 1 && this.state.isFullName === 1 && this.state.isFacultyId === 1 && this.state.isFacultyId === 1) {
         let registered = {
             fullname: this.state.fullname,
-            username: this.state.username,
             email: this.state.email,
             password: this.state.password,
-            enrollmentid: this.state.enrollmentid,
-            rollno: this.state.rollno,
-            date: this.state.date
+            domainname: this.state.domainname,
+            facultyid: this.state.facultyid,
         };
 
         console.log(registered);
 
-        const response = await axios.post("http://localhost:5000/app/signup", registered);
+        const response = await axios.post("http://localhost:5000/app/facultysignup", registered);
         console.log(response);
         console.log(response.data);
 
-        if(response.data === "EMAIL" || response.data === "USERNAME" || response.data === "EID" || response.data === "ROLLNO") {
+        if(response.data === "EMAIL" || response.data === "FID") {
             if(response.data === "EMAIL") {
                 alert("This E-Mail ID is already in use, please try another one.");
             }
-            else if(response.data === "USERNAME") {
-                alert("This username is already in use, please try another one.");
-            }
-            else if(response.data === "EID") {
-                alert("Enrollment ID is already associated with an account, please Login.");
-            }
-            else if(response.data === "ROLLNO") {
-                alert("Incorrect Roll No.");
+            else if(response.data === "FID") {
+                alert("This Faculty ID is already associated with another account, please Login.");
             }
         }
         else {
             this.setState ({
                 fullname: "",
-                username: "",
                 email: "",
                 password: "",
-                enrollmentid: "",
-                rollno: ""
+                facultyid: ""
             });
             alert("Sign Up Successful");
         }
@@ -153,9 +121,9 @@ class signupPage extends React.Component {
     }
 
     validateFullName() {
-        const regularexp = /^[a-zA-Z]+$/;
+        const regularexp = /^[a-zA-Z\s]+$/;
         const fullName = this.state.fullname;
-        if(fullName === "") {
+        if(fullName == "") {
             this.state.isFullName = 0;
             return(<p className="error-message">Full Name cannot be empty.</p>);
         }
@@ -166,32 +134,13 @@ class signupPage extends React.Component {
         this.state.isFullName = 1;
     }
 
-    validateEnrollmentId() {
-        const facid = this.state.enrollmentid;
+    validateFacultyId() {
+        const facid = this.state.facultyid;
         if(facid.length === 0) {
-            this.state.isEid = 0;
-            return(<p className="error-message">Enrollment ID cannot be empty.</p>);
+            this.state.isFacultyId = 0;
+            return(<p className="error-message">Faculty ID cannot be empty.</p>);
         }
-        this.state.isEid = 1;
-    }
-
-    validateUsername() {
-        const regularexp = /^[a-zA-Z0-9_.-]+$/;
-        if(!regularexp.test(this.state.username)) {
-            this.state.isUsername = 0;
-            return(<p className="error-message">Invalid username.</p>);
-        }
-        this.state.isUsername=1;
-    }
-
-    validateRollNo() {
-        const regularexp = /^[0-9]+$/;
-        const rollno = this.state.rollno;
-        if(!regularexp.test(rollno)) {
-            this.state.isRollNo = 0;
-            return(<p className="error-message">Invalid Roll No.</p>);
-        }
-        this.state.isRollNo = 1;
+        this.state.isFacultyId = 1;
     }
 
     render() {
@@ -201,31 +150,31 @@ class signupPage extends React.Component {
     
                 <div className="signup-container">
                 <form onSubmit = {this.onSubmit}>
-                    <h3>Student Signup</h3>
+                    <h3>PICT Faculty Signup</h3>
                     <div className="mb-4">
                         <label htmlFor="fullname" className="form-label">Full Name</label>
                         <input type="text" className="form-control input-control" placeholder="Full Name" id="fullname" name="fullname" onChange={this.changeFullName} value={this.state.fullname} />
                         {this.validateFullName()}
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="username" className="form-label">username</label>
-                        <input type="text" className="form-control input-control" placeholder="username"  id="username" name="username" onChange={this.changeuserName} value={this.state.username} />
-                        {this.validateUsername()}
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="enrollmentid" className="form-label">Enrollment ID</label>
-                        <input type="text" className="form-control input-control" placeholder="PICT-EID"  id="enrollmentid" name="enrollmentid" onChange={this.changeEID} value={this.state.enrollmentid} />
-                        {this.validateEnrollmentId()}
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="rollno" className="form-label">Roll Number</label>
-                        <input type="text" className="form-control input-control" placeholder="PICT Roll-No"  id="rollno" name="Roll NO" onChange={this.changeRollNumber} value={this.state.rollno} />
-                        {this.validateRollNo()}
+                        <label htmlFor="facultyid" className="form-label">Faculty ID</label>
+                        <input type="text" className="form-control input-control" placeholder="PICT-FID"  id="facultyid" name="facultyid" onChange={this.changeFID} value={this.state.facultyid} />
+                        {this.validateFacultyId()}
                     </div>
                     <div className="mb-4">
                         <label htmlFor="email" className="form-label">EMail-ID</label>
                         <input type="email" className="form-control input-control" placeholder="email" id="email" name="email" onChange={this.changeEmail} value={this.state.email} />
                         {this.validateEmail()}
+                    </div>
+                    <div className="mb-2">
+                        <label htmlFor="domain-name" className="form-label">Select Domain Name </label>
+                        <br></br>
+                        <select name="domain-name" id="domain-name" onChange={this.changeDomain} value={this.state.domainname}>
+                            <option value="AI">Artificial Intelligence</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Android Development">Android/IOS Development</option>
+                            <option value="Cyber Security">Cyber Security</option>
+                        </select>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="password" className="form-label">Password</label>
@@ -233,14 +182,13 @@ class signupPage extends React.Component {
                         {this.validatePassword()}
                     </div>
 
-                    <input type="submit" className="btn btn-primary sign-up-button input-control" value="Submit" onClick={this.setDate}/>
+                    <input type="submit" className="btn btn-primary sign-up-button input-control" value="Submit"/>
                 </form>
                 </div>
                 </div>
             </div>
         );
     }
-
 }
 
-export default signupPage;
+export default facultySignup;
